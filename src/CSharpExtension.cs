@@ -43,6 +43,9 @@ namespace Oxide.Plugins
         // The .cs plugin loader
         private CSharpPluginLoader loader;
 
+        // The .dll plugin loader.
+        private CompiledLoader loader2;
+
         // Is the sandbox enabled? (always default to true)
         public static bool SandboxEnabled { get; private set; } = true;
 
@@ -70,8 +73,11 @@ namespace Oxide.Plugins
         public override void Load()
         {
             // Register our loader
-            loader = new CSharpPluginLoader(this);
+            loader  = new CSharpPluginLoader(this);
+            loader2 = new CompiledLoader(this);
+
             Manager.RegisterPluginLoader(loader);
+            Manager.RegisterPluginLoader(loader2);
 
             // Register engine frame callback
             Interface.Oxide.OnFrame(OnFrame);
@@ -90,7 +96,7 @@ namespace Oxide.Plugins
         public override void LoadPluginWatchers(string pluginDirectory)
         {
             // Register the watcher
-            Watcher = new FSWatcher(pluginDirectory, "*.cs");
+            Watcher = new FSWatcher(pluginDirectory, "*");
             Manager.RegisterPluginChangeWatcher(Watcher);
         }
 
